@@ -3,15 +3,14 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 
 from .models import Task
-from .serializer import TaskSerializer
-
+from .serializer import TaskReadSerializer, TaskWriteSerializer
 
 
 # Get all Tasks
 @api_view(["GET"])
 def getTasks(request):
     tasks = Task.objects.all()    
-    serializer = TaskSerializer(tasks, many=True)
+    serializer = TaskReadSerializer(tasks, many=True)
 
     return Response(serializer.data)
 
@@ -24,7 +23,7 @@ def getTaskByID(request, task_id):
         return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
     
      
-    serializer = TaskSerializer(task)
+    serializer = TaskReadSerializer(task)
     return Response(serializer.data)
 
 
@@ -33,7 +32,7 @@ def getTaskByID(request, task_id):
 def postTask(request):
     # Assuming you are sending task data in the request body
     data = request.data
-    serializer = TaskSerializer(data=data)
+    serializer = TaskWriteSerializer(data=data)
 
     if serializer.is_valid():
         serializer.save()

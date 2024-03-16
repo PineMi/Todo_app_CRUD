@@ -1,10 +1,7 @@
 from django.urls import path
-from .views import getTasks, getTaskByID, postTask
+from .views import touchTasks, touchTaskByID
 
 urlpatterns = [
-    path("tasks", getTasks),
-    path("tasks/<int:task_id>", getTaskByID),
-    path("register", postTask)
-
-
+    path("tasks", touchTasks), #Create, Retrieve
+    path("tasks/<int:task_id>", touchTaskByID), #Delete, Update, Retrieve 
 ]

@@ -23,4 +23,3 @@ class TaskWriteSerializer(ModelSerializer):
         if deadline <= timezone.now():
             raise ValidationError("You can't have a deadline in the past")
         return deadline
-    

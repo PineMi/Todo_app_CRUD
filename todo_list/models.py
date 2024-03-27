@@ -1,8 +1,9 @@
 from django.db import models
+from authentication.models import Profile
 
-# Criando uma classe herdada de model
 class Task(models.Model):
 
+    profile = models.ForeignKey(Profile, related_name="tasks", on_delete=models.CASCADE, null=False)
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True,null=True)

@@ -1,22 +1,25 @@
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Task
 from .serializer import TaskReadSerializer, TaskWriteSerializer
 
-
 #Retrieve or Create
+
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
 def touchTasks(request):
     if request.method == "GET":
         print("Client Retrieved Tasks data...")
-        tasks = Task.objects.all()    
+        tasks = Task.objects.filter(profile = request.user.profile) 
         serializer = TaskReadSerializer(tasks, many=True)
         return Response(serializer.data)
     elif request.method == "POST":
         print("Client Posted a new tasks data...")
         data = request.data
+        data["profile"] = request.user.profile.id
         serializer = TaskWriteSerializer(data=data)
 
         if serializer.is_valid():
@@ -24,7 +27,7 @@ def touchTasks(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
+#TODO: Segment all requests by token
 # Delete, Update, Retrieve 
 @api_view(["DELETE", "PATCH", "GET"])
 def touchTaskByID(request, task_id):
